@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hacktaika-db-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hacktaika}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hacktaika_password}
+      POSTGRES_DB: ${POSTGRES_DB:-hacktaika_db}
+      # Production оптимизация
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+      - postgres_cache_prod:/var/lib/postgresql/cache
+    networks:
+      - hacktaika-network-prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hacktaika}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      cache_from:
+        - hacktaika-frontend-prod:latest
+    container_name: hacktaika-frontend-prod
+    restart: always
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL:-postgresql://hacktaika:hacktaika_password@postgres:5432/hacktaika_db}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - NEXT_TELEMETRY_DISABLED=1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hacktaika-network-prod
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+volumes:
+  postgres_data_prod:
+    driver: local
+  postgres_cache_prod:
+    driver: local
+
+networks:
+  hacktaika-network-prod:
+    driver: bridge

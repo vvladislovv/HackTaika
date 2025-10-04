@@ -1,0 +1,82 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hacktaika-db
+    restart: always
+    environment:
+      POSTGRES_USER: hacktaika
+      POSTGRES_PASSWORD: hacktaika_password
+      POSTGRES_DB: hacktaika_db
+      # Оптимизация PostgreSQL
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Кэш для лучшей производительности
+      - postgres_cache:/var/lib/postgresql/cache
+    networks:
+      - hacktaika-network
+    # Health check для зависимостей
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hacktaika"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # Ресурсы для оптимизации
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+      # Включаем BuildKit для кэширования
+      cache_from:
+        - hacktaika-frontend:latest
+    container_name: hacktaika-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://hacktaika:hacktaika_password@postgres:5432/hacktaika_db
+      - NEXTAUTH_SECRET=your-super-secret-key-change-in-production
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXT_TELEMETRY_DISABLED=1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hacktaika-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+      # Кэш для Next.js
+      - nextjs_cache:/app/.next/cache
+    # Health check для frontend
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  postgres_data:
+    driver: local
+  postgres_cache:
+    driver: local
+  nextjs_cache:
+    driver: local
+
+networks:
+  hacktaika-network:
+    driver: bridge

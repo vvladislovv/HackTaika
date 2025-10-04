@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Work {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  price       String
+  images      String[] // URLs массив
+  videos      String[] // URLs массив
+  siteUrl     String?
+  clientName  String
+  clientReview String
+  category    String
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Order       Order[]
+}
+
+model PortfolioItem {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  images       String[] // URLs массив
+  videos       String[] // URLs массив
+  siteUrl      String?
+  clientName   String
+  clientReview String
+  category     String
+  featured     Boolean  @default(false)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model BlogPost {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  excerpt   String
+  image     String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Social {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  icon      String   // Название иконки или URL
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  message     String
+  workId      String?
+  work        Work?    @relation(fields: [workId], references: [id])
+  status      String   @default("new") // new, processing, completed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DetailedApplication {
+  id             String   @id @default(cuid())
+  fullName       String
+  email          String
+  phone          String
+  projectType    String
+  budget         String
+  deadline       String
+  description    String
+  additionalInfo String?
+  status         String   @default("new") // new, processing, completed
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

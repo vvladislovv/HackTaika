@@ -1,0 +1,29 @@
+# Development Dockerfile с hot reload и кэшированием
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies
+RUN apk add --no-cache libc6-compat openssl
+
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies с кэшированием
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --prefer-offline
+
+# Copy source code
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Expose port
+EXPOSE 3000
+
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Start with hot reload
+CMD ["npm", "run", "dev"]
