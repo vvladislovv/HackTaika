@@ -39,19 +39,14 @@ echo ⏳ Ожидание запуска сервисов (это может з�
 timeout /t 30 /nobreak >nul
 
 echo.
-echo 🌱 Заполнение базы данных тестовыми данными...
-docker-compose exec -T frontend npm run seed
-
-echo.
 echo 🎉 Проект успешно запущен!
 echo.
 echo 📍 Доступные адреса:
 echo    Главная страница: http://localhost:3000
 echo    Админ-панель: http://localhost:3000/admin
 echo.
-echo 🔐 Данные для входа:
-echo    Email: admin@hacktaika.com
-echo    Пароль: admin123
+echo 🔐 Создайте администратора:
+echo    docker exec hacktaika-frontend npm run create-admin
 echo.
 echo 📚 Полезные команды:
 echo    Остановить: docker-compose down

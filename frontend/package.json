@@ -10,7 +10,6 @@
         "prisma:generate": "prisma generate",
         "prisma:push": "prisma db push",
         "prisma:studio": "prisma studio",
-        "seed": "node scripts/seed.js",
         "create-admin": "node scripts/create-admin.js"
     },
     "dependencies": {

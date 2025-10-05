@@ -56,23 +56,29 @@ export const orderSchema = z.object({
   name: z.string().min(2, 'Имя должно быть минимум 2 символа'),
   email: z.string().email('Неверный формат email'),
   phone: z.string().min(10, 'Неверный формат телефона'),
+  telegram: z.string().optional(),
   message: z.string().min(10, 'Сообщение должно быть минимум 10 символов'),
   workId: z.string().optional(),
 })
 
 // Новая схема для подробной заявки
 export const detailedApplicationSchema = z.object({
-  // Блок 1: Контактная информация
+  // Блок 1: Контактная информация (3 вопроса)
   fullName: z.string().min(2, 'Введите ваше полное имя'),
   email: z.string().email('Неверный формат email'),
   phone: z.string().min(10, 'Введите корректный номер телефона'),
+  telegram: z.string().optional(),
   
-  // Блок 2: О проекте
+  // Блок 2: О проекте и целях (3 вопроса)
   projectType: z.string().min(1, 'Выберите тип проекта'),
+  projectProblem: z.string().min(10, 'Опишите проблему (минимум 10 символов)'),
+  targetAudience: z.string().min(5, 'Укажите целевую аудиторию (минимум 5 символов)'),
+  
+  // Блок 3: Требования и ожидания (2 вопроса)
   budget: z.string().min(1, 'Выберите бюджет'),
   deadline: z.string().min(1, 'Укажите сроки'),
   
-  // Блок 3: Детали
+  // Блок 4: Детали проекта (2 вопроса)
   description: z.string().min(20, 'Опишите проект подробнее (минимум 20 символов)'),
   additionalInfo: z.string().optional(),
 })

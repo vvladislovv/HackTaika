@@ -103,6 +103,14 @@ export function OrderForm() {
               {...register('phone')}
             />
 
+            <Input
+              label="Telegram (опционально)"
+              type="text"
+              placeholder="@username"
+              error={errors.telegram?.message}
+              {...register('telegram')}
+            />
+
             <Textarea
               label="Сообщение"
               placeholder="Расскажите о вашем проекте..."

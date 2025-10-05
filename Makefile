@@ -1,4 +1,4 @@
-.PHONY: help dev prod build up down restart logs clean prune seed admin health backup restore
+.PHONY: help dev prod build up down restart logs clean prune admin health backup restore
 
 # Цвета для вывода
 GREEN  := \033[0;32m
@@ -87,11 +87,6 @@ db-migrate: ## Создать миграцию
 db-studio: ## Открыть Prisma Studio
 	@echo "$(GREEN)🎨 Запуск Prisma Studio...$(NC)"
 	docker exec -it $(FRONTEND_CONTAINER) npx prisma studio
-
-seed: ## Заполнить БД тестовыми данными
-	@echo "$(GREEN)🌱 Заполнение БД...$(NC)"
-	docker exec -it $(FRONTEND_CONTAINER) npm run seed
-	@echo "$(GREEN)✅ Данные добавлены$(NC)"
 
 admin: ## Создать администратора
 	@echo "$(GREEN)👤 Создание администратора...$(NC)"
@@ -188,7 +183,7 @@ psql: ## Подключиться к PostgreSQL
 	docker exec -it $(DB_CONTAINER) psql -U hacktaika -d hacktaika_db
 
 # Установка и обновление
-install: ## Первая установка (build + db push + seed)
+install: ## Первая установка (build + db push)
 	@echo "$(GREEN)🎉 Первая установка HackTaika...$(NC)"
 	@echo "$(GREEN)1. Сборка образов...$(NC)"
 	$(COMPOSE_DEV) build
@@ -198,8 +193,6 @@ install: ## Первая установка (build + db push + seed)
 	@sleep 10
 	@echo "$(GREEN)4. Применение схемы БД...$(NC)"
 	docker exec $(FRONTEND_CONTAINER) npx prisma db push
-	@echo "$(GREEN)5. Заполнение тестовыми данными...$(NC)"
-	docker exec $(FRONTEND_CONTAINER) npm run seed
 	@echo "$(GREEN)✨ Установка завершена! Приложение доступно на http://localhost:3000$(NC)"
 
 update: ## Обновить зависимости и пересобрать

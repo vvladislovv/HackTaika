@@ -83,7 +83,7 @@ export function Socials() {
           </p>
         </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex justify-center items-center gap-6">
           {socials.map((social, index) => (
             <motion.a
               key={social.id}

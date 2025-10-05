@@ -11,6 +11,8 @@ interface Application {
   email: string
   phone: string
   projectType: string
+  projectProblem: string
+  targetAudience: string
   budget: string
   deadline: string
   description: string
@@ -129,6 +131,10 @@ export default function AdminApplicationsPage() {
                 <p className="font-medium text-dark-brown">{app.projectType}</p>
               </div>
               <div>
+                <p className="text-sm text-brown">Целевая аудитория:</p>
+                <p className="font-medium text-dark-brown">{app.targetAudience}</p>
+              </div>
+              <div>
                 <p className="text-sm text-brown">Бюджет:</p>
                 <p className="font-medium text-orange">{app.budget}</p>
               </div>
@@ -139,7 +145,12 @@ export default function AdminApplicationsPage() {
             </div>
 
             <div className="mb-4">
-              <p className="text-sm text-brown mb-1">Описание:</p>
+              <p className="text-sm text-brown mb-1">Проблема, которую решает:</p>
+              <p className="text-dark-brown">{app.projectProblem}</p>
+            </div>
+
+            <div className="mb-4">
+              <p className="text-sm text-brown mb-1">Описание проекта:</p>
               <p className="text-dark-brown">{app.description}</p>
             </div>
 

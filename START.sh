@@ -45,23 +45,18 @@ else
 fi
 
 echo ""
-echo "📦 Ожидание инициализации базы данных..."
-sleep 20
-
-# Заполнение базы данных
-echo "🌱 Заполнение базы данных тестовыми данными..."
-docker-compose exec -T frontend npm run seed
-
-echo ""
 echo "🎉 Проект успешно запущен!"
 echo ""
 echo "📍 Доступные адреса:"
 echo "   Главная страница: http://localhost:3000"
 echo "   Админ-панель: http://localhost:3000/admin"
 echo ""
-echo "🔐 Данные для входа:"
-echo "   Email: admin@hacktaika.com"
-echo "   Пароль: admin123"
+echo "🔐 Создайте администратора:"
+if command -v make &> /dev/null; then
+    echo "   make admin"
+else
+    echo "   docker exec hacktaika-frontend npm run create-admin"
+fi
 echo ""
 echo "📚 Полезные команды:"
 if command -v make &> /dev/null; then

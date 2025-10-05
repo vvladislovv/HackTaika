@@ -43,7 +43,7 @@ export function DetailedApplicationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
-  const totalSteps = 3
+  const totalSteps = 4
 
   const {
     register,
@@ -64,9 +64,11 @@ export function DetailedApplicationForm() {
     let fieldsToValidate: (keyof ApplicationFormData)[] = []
 
     if (currentStep === 1) {
-      fieldsToValidate = ['fullName', 'email', 'phone']
+      fieldsToValidate = ['fullName', 'email', 'phone', 'telegram']
     } else if (currentStep === 2) {
-      fieldsToValidate = ['projectType', 'budget', 'deadline']
+      fieldsToValidate = ['projectType', 'projectProblem', 'targetAudience']
+    } else if (currentStep === 3) {
+      fieldsToValidate = ['budget', 'deadline']
     }
 
     const isValid = await trigger(fieldsToValidate)
@@ -222,10 +224,18 @@ export function DetailedApplicationForm() {
                     autoComplete="tel"
                     {...register('phone')}
                   />
+
+                  <Input
+                    label="Telegram (опционально)"
+                    type="text"
+                    placeholder="@username"
+                    error={errors.telegram?.message}
+                    {...register('telegram')}
+                  />
                 </motion.div>
               )}
 
-              {/* Шаг 2: О проекте */}
+              {/* Шаг 2: О проекте и целях */}
               {currentStep === 2 && (
                 <motion.div
                   key="step2"
@@ -236,7 +246,7 @@ export function DetailedApplicationForm() {
                   className="space-y-6"
                 >
                   <h3 className="text-2xl font-bold text-dark-brown mb-4">
-                    О проекте
+                    О проекте и целях
                   </h3>
 
                   <div>
@@ -260,6 +270,37 @@ export function DetailedApplicationForm() {
                       </p>
                     )}
                   </div>
+
+                  <Textarea
+                    label="Какую проблему решает ваш проект? *"
+                    placeholder="Например: Клиенты не могут быстро оформить заказ на нашем сайте..."
+                    rows={4}
+                    error={errors.projectProblem?.message}
+                    {...register('projectProblem')}
+                  />
+
+                  <Input
+                    label="Кто ваша целевая аудитория? *"
+                    placeholder="Например: Молодые родители 25-35 лет"
+                    error={errors.targetAudience?.message}
+                    {...register('targetAudience')}
+                  />
+                </motion.div>
+              )}
+
+              {/* Шаг 3: Требования и ожидания */}
+              {currentStep === 3 && (
+                <motion.div
+                  key="step3"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-6"
+                >
+                  <h3 className="text-2xl font-bold text-dark-brown mb-4">
+                    Требования и ожидания
+                  </h3>
 
                   <div>
                     <label className="block text-sm font-medium text-dark-brown mb-2">
@@ -307,10 +348,10 @@ export function DetailedApplicationForm() {
                 </motion.div>
               )}
 
-              {/* Шаг 3: Детали */}
-              {currentStep === 3 && (
+              {/* Шаг 4: Детали проекта */}
+              {currentStep === 4 && (
                 <motion.div
-                  key="step3"
+                  key="step4"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
@@ -322,16 +363,16 @@ export function DetailedApplicationForm() {
                   </h3>
 
                   <Textarea
-                    label="Описание проекта *"
-                    placeholder="Расскажите подробно о вашем проекте, целях, задачах..."
+                    label="Опишите ваш проект подробно *"
+                    placeholder="Расскажите о функционале, особенностях, что именно вы хотите получить..."
                     rows={6}
                     error={errors.description?.message}
                     {...register('description')}
                   />
 
                   <Textarea
-                    label="Дополнительная информация"
-                    placeholder="Есть ли у вас примеры или референсы? Какие-то особые пожелания?"
+                    label="Дополнительная информация (референсы, особые пожелания)"
+                    placeholder="Есть ли примеры сайтов, которые вам нравятся? Какие-то особые требования к дизайну или функционалу?"
                     rows={4}
                     {...register('additionalInfo')}
                   />
@@ -368,7 +409,7 @@ export function DetailedApplicationForm() {
 
           {/* Step Indicators */}
           <div className="flex justify-center mt-8 space-x-2">
-            {[1, 2, 3].map((step) => (
+            {[1, 2, 3, 4].map((step) => (
               <div
                 key={step}
                 className={`h-2 w-2 rounded-full transition-smooth ${

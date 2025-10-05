@@ -11,8 +11,8 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'HackTaika - Инновационные цифровые решения',
-  description: 'Разработка веб-приложений, дизайн и маркетинг для вашего бизнеса',
+  title: 'HackTaika',
+  description: '',
 }
 
 export default function RootLayout({

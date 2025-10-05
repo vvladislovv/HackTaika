@@ -66,8 +66,6 @@ case $choice in
             sleep 10
             echo -e "${YELLOW}Применение схемы БД...${NC}"
             docker exec hacktaika-frontend npx prisma db push
-            echo -e "${YELLOW}Заполнение тестовыми данными...${NC}"
-            docker exec hacktaika-frontend npm run seed
         fi
         ;;
     2)

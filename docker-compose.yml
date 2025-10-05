@@ -50,6 +50,8 @@ services:
       - NEXTAUTH_SECRET=your-super-secret-key-change-in-production
       - NEXTAUTH_URL=http://localhost:3000
       - NEXT_TELEMETRY_DISABLED=1
+      - BOT_WEBHOOK_URL=http://telegram-bot:3001
+      - BOT_WEBHOOK_SECRET=${BOT_WEBHOOK_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
@@ -68,6 +70,31 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+
+  telegram-bot:
+    build:
+      context: ./telegram-bot
+      dockerfile: Dockerfile
+    container_name: hacktaika-telegram-bot
+    restart: always
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_ADMIN_ID=${TELEGRAM_ADMIN_ID}
+      - WEBAPP_URL=${WEBAPP_URL}
+      - BOT_WEBHOOK_SECRET=${BOT_WEBHOOK_SECRET}
+      - WEBHOOK_PORT=3001
+    ports:
+      - "3001:3001"
+    networks:
+      - hacktaika-network
+    # Health check для telegram bot
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    command: sh -c "python webhook_server.py & python bot.py"
 
 volumes:
   postgres_data:

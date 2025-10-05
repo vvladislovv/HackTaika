@@ -106,7 +106,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-xl md:text-2xl text-brown mb-12 max-w-3xl mx-auto"
         >
-          Разработка веб-приложений, дизайн и маркетинг для вашего бизнеса
+          
         </motion.p>
 
         <motion.div

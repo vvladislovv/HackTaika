@@ -36,9 +36,6 @@ const nextConfig = {
     return `build-${Date.now()}`
   },
   
-  // Кэширование SWC
-  swcMinify: true,
-  
   // Webpack оптимизация
   webpack: (config, { isServer }) => {
     if (!isServer) {

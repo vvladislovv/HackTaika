@@ -75,6 +75,7 @@ model Order {
   name        String
   email       String
   phone       String
+  telegram    String?
   message     String
   workId      String?
   work        Work?    @relation(fields: [workId], references: [id])
@@ -88,7 +89,10 @@ model DetailedApplication {
   fullName       String
   email          String
   phone          String
+  telegram       String?
   projectType    String
+  projectProblem String
+  targetAudience String
   budget         String
   deadline       String
   description    String
